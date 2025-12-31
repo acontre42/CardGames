@@ -31,103 +31,16 @@ private:
 	int activePlayer;
 	int handSize;
 public:
-	GoFish()
-	{
-		numPlayers = -1;
-		activePlayer = FIRST_PLAYER;
-		handSize = -1;
-	}
-	// Displays name of game, asks how many players, sets size of hand and sets up players vector.
-	void setup()
-	{
-		cout << "*****GO FISH*****" << endl;
-		while (numPlayers < MIN_PLAYERS || numPlayers > MAX_PLAYERS)
-		{
-			cout << "Please enter number of players(2-4):";
-			cin >> numPlayers;
-			if (cin.fail())
-			{
-				cout << "\nError: Must be a number.\n";
-				cin.clear();
-			}
-			cin.ignore(numeric_limits<streamsize>::max(), '\n');
-		}
-		
-		if (numPlayers == MIN_PLAYERS)
-		{
-			handSize = TWO_PLAYER_HAND;
-		}
-		else
-		{
-			handSize = THREE_PLAYER_HAND;
-		}
-
-		for (int i = 1; i <= numPlayers; i++)
-		{
-			string name = "Player " + to_string(i);
-			players.emplace_back(name);
-		}
-	}
-	// Plays the game.
-	void run()
-	{
-		bool playAgain = true;
-		char choice = ' ';
-
-		do
-		{
-			setup();
-			playRound();
-			// Play again?
-			cout << "Would you like to play again? Enter 'Q' to quit or any other key to play again." << endl;
-			cin >> choice;
-			cin.ignore(numeric_limits<streamsize>::max(), '\n');
-			choice = tolower(choice);
-			if (choice == 'q')
-			{
-				playAgain = false;
-			}
-			choice = ' ';
-
-			if (playAgain)
-			{
-				cleanup();
-			}
-			else
-			{
-				cout << "\nGoodbye!\n\n";
-			}
-		} while (playAgain);		
-	}
-	// Deals cards, loops through turns until no more cards in play deck or players' hands.
-	void playRound()
-	{
-		dealHands();
-		
-		while (!deck.empty() || !allHandsEmpty())
-		{
-			if (players[activePlayer].hand.empty() && deck.empty())
-			{
-				cout << "Sorry, " << players[activePlayer].name << ", there are no more cards in your hand or in the play deck! ";
-				cout << "Skipping to the next player..." << endl;
-			}
-			else
-			{
-				takeTurn(players[activePlayer]);
-			}
-
-			activePlayer = (activePlayer + 1) % numPlayers;
-		}
-		cout << "All cards gone!" << endl;
-		displayAllBooks();
-		decideWinner();
-	}
+	GoFish();
+	void setup(); // Displays name of game, asks how many players, sets size of hand and sets up players vector.
+	void run(); // Plays the game.
+	void playRound(); // Deals cards, loops through turns until no more cards in play deck or players' hands.
 	// Provide a buffer at beginning of turn, display hand and check for books. Draw cards if hand empty.
 	// If targets available, ask Player who they want to target and what value they want. Handle moves accordingly.
 	// If no targets available, draw card from deck or skip to next player if deck empty.
 	void takeTurn(Player& player)
 	{
-		turnsBuffer(player.name);
+		startTurnsBuffer();
 		displayCurrentHand();
 		checkForBooks(player);
 
@@ -293,7 +206,7 @@ public:
 			//displayTestingStuff();
 		} while (goAgain);
 
-		cout << "*****END OF TURN*****" << endl;
+		endTurnBuffer();
 	}
 	// Deals hands to all Players, then calls function to sort them in ascending order.
 	void dealHands()
@@ -478,40 +391,9 @@ public:
 		cout << "Your current hand:" << endl;
 		players[activePlayer].hand.display();
 	}
-	// Provides a buffer between Players' turns. // TO DO: ADJUST NUMBER OF STARS DISPLAYED
-	void turnsBuffer(string name)
-	{
-		char buffer = ' ';
-		for (int i = 0; i < NUM_STARS; i++)
-		{
-			cout << "\n*\n";
-		}
-		cout << name << "'s Turn" << endl;
-		cout << "Enter any key to continue:";
-		cin >> buffer;
-		cin.ignore(numeric_limits<streamsize>::max(), '\n');
-	}
-	// FOR TESTING PURPOSES: Displays players' hands, size of hands, booksPile, numBooks and size of playdeck.
-	void displayTestingStuff()
-	{
-		cout << "\n\n***********TESTING STUFF*********" << endl;
-		cout << "PLAYER CARDS " << endl;
-		for (auto p : players)
-		{
-			cout << p.name << "'s cards:" << endl;
-			p.hand.display();
-			cout << "Total: " << p.hand.getSize() << endl;
-			cout << "Book pile: " << endl;
-			for (auto b : p.booksPile)
-			{
-				b.display();
-				cout << endl;
-			}
-			cout << "Num. of books: " << p.numBooks << endl << endl;
-		}
-		cout << "Deck size: " << deck.getSize() << endl;
-		cout << "\n********************************\n\n";
-	}
+	void startTurnsBuffer() const; // Provides a buffer between Players' turns.
+	void endTurnBuffer(); // Provide buffer at end of turn to keep screen from skipping forward.
+	void displayTestingStuff(); // FOR TESTING PURPOSES: Displays players' hands, size of hands, booksPile, numBooks and playdeck size.
 };
 
 // HOW TO PLAY GO FISH
@@ -522,12 +404,14 @@ public:
 // Once a player has 4 of same value, they have a book
 // Books are set aside and those cards can no longer be traded
 // Player with the most books at end of game wins
-// if Player runs out of cards, they draw 5 (or 7 if two players) cards from play deck
-// if not enough cards left in play deck, take the remainder
-// if there are no cards left in play deck, this Player sits out
-// game ends when no more cards in play deck or any of the Players' hands
+// If Player runs out of cards, they draw 5 (or 7 if two players) cards from play deck
+// If not enough cards left in play deck, take the remainder
+// If there are no cards left in play deck, this Player sits out
+// Game ends when no more cards in play deck or any of the Players' hands
 
 // TO DO:
 // make sure hands get sorted after every change to hand
+// assign player at start of turn based on activePLayer instead of passing player by reference
 // optional: take a turn to show players their cards after first dealing them?
 // optional: consider adding a string to each Player that informs them of the moves taken against them between their turns
+// optional: consider sorting books before displaying
