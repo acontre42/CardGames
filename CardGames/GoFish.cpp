@@ -3,7 +3,7 @@
 GoFish::GoFish()
 {
 	numPlayers = -1;
-	activePlayer = FIRST_PLAYER;
+	activePlayer = -1;
 	handSize = -1;
 }
 
@@ -60,6 +60,8 @@ void GoFish::playRound()
 
 	while (!deck.empty() || !allHandsEmpty())
 	{
+		activePlayer = (activePlayer + 1) % numPlayers; // Adding 1 at beginning of turn brings invalid activePlayer into range at start of game.
+
 		if (players[activePlayer].hand.empty() && deck.empty())
 		{
 			cout << "Sorry, " << players[activePlayer].name << ", there are no more cards in your hand or in the play deck! ";
@@ -67,18 +69,17 @@ void GoFish::playRound()
 		}
 		else
 		{
-			takeTurn(players[activePlayer]);
+			takeTurn();
 		}
-
-		activePlayer = (activePlayer + 1) % numPlayers;
 	}
 	cout << "All cards gone!" << endl;
 	displayAllBooks();
 	decideWinner();
 }
 
-void GoFish::takeTurn(Player& player)
+void GoFish::takeTurn()
 {
+	Player& player = players[activePlayer]; // Set player taking current turn.
 	startTurnsBuffer();
 	displayCurrentHand();
 	checkForBooks(player);
@@ -282,7 +283,7 @@ void GoFish::cleanup()
 {
 	players.clear();
 	numPlayers = -1;
-	activePlayer = FIRST_PLAYER;
+	activePlayer = -1;
 	handSize = -1;
 	deck.clear();
 	deck.populate();

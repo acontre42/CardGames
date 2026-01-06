@@ -9,7 +9,7 @@ using namespace std;
 class GoFish
 {
 private:
-	const int FIRST_PLAYER = 0, NUM_DECKS = 1, MIN_PLAYERS = 2, MAX_PLAYERS = 4, BOOK = 4, NUM_STARS = 25;
+	const int NUM_DECKS = 1, MIN_PLAYERS = 2, MAX_PLAYERS = 4, BOOK = 4, NUM_STARS = 25;
 	const int TWO_PLAYER_HAND = 7, THREE_PLAYER_HAND = 5;
 	struct Player
 	{
@@ -38,7 +38,7 @@ public:
 	// Provide a buffer at beginning of turn, display hand and check for books. Draw cards if hand empty.
 	// If targets available, ask Player who they want to target and what value they want. Handle moves accordingly.
 	// If no targets available, draw card from deck or skip to next player if deck empty.
-	void takeTurn(Player& player);
+	void takeTurn();
 	void dealHands(); // Deals hands to all Players, then calls function to sort them in ascending order.
 	void dealCard(Player& player); // Deals a card from play deck to a Player's hand.
 	void displayAvailableTargets(); // Displays all Players (except activePlayer) who have cards in their hands in a list.
@@ -69,7 +69,6 @@ public:
 
 // TO DO:
 // make sure hands get sorted after every change to hand
-// assign player at start of turn based on activePLayer instead of passing player by reference
 // optional: take a turn to show players their cards after first dealing them?
 // optional: consider adding a string to each Player that informs them of the moves taken against them between their turns
 // optional: consider sorting books before displaying
