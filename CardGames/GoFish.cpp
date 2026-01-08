@@ -72,7 +72,7 @@ void GoFish::playRound()
 			takeTurn();
 		}
 	}
-	cout << "All cards gone!" << endl;
+	cout << "***********************" << "\n\nAll cards gone!" << endl;
 	displayAllBooks();
 	decideWinner();
 }
@@ -82,15 +82,15 @@ void GoFish::takeTurn()
 	Player& player = players[activePlayer]; // Set player taking current turn.
 	startTurnsBuffer();
 	displayCurrentHand();
-	checkForBooks(player);
+	checkForBooks();
 
 	bool goAgain = false;
 	do
 	{
 		if (player.hand.empty() && deck.empty())
 		{
-			cout << "Sorry, " << player.name << ", there are no more cards in your hand or in the play deck! ";
-			cout << "Skipping to the next player..." << endl;
+			cout << "Sorry, " << player.name << ", there are no more cards in your hand or in the play deck! \n";
+			endTurnBuffer();
 			return;
 		}
 
@@ -159,7 +159,7 @@ void GoFish::takeTurn()
 			cout << "Note: Ace = 1, 2 - 10 = 2 - 10 , Jack = 11, Queen = 12, King = 13." << endl;
 			while (!validValue)
 			{
-				cout << "Enter number of value you want:";
+				cout << "Enter number of value you want: ";
 				cin >> value;
 				if (cin.fail())
 				{
@@ -220,7 +220,7 @@ void GoFish::takeTurn()
 			}
 			player.hand.sortByAscValue();
 			displayCurrentHand();
-			checkForBooks(player);
+			checkForBooks();
 		}
 		else
 		{
@@ -238,7 +238,7 @@ void GoFish::takeTurn()
 				cout << "." << endl;
 				player.hand.sortByAscValue();
 				displayCurrentHand();
-				checkForBooks(player);
+				checkForBooks();
 			}
 			goAgain = false;
 		}
@@ -313,8 +313,9 @@ bool GoFish::targetsAvailable()
 	return false;
 }
 
-void GoFish::checkForBooks(Player& player) const
+void GoFish::checkForBooks()
 {
+	Player& player = players[activePlayer]; // Set player being checked
 	if (player.hand.getSize() < BOOK) // If player has less than 4 cards, just return.
 	{
 		return;
@@ -429,12 +430,13 @@ void GoFish::displayCurrentHand()
 void GoFish::startTurnsBuffer() const
 {
 	char buffer;
+	const int NUM_STARS = 20;
 	for (int i = 0; i < NUM_STARS; i++)
 	{
 		cout << "\n*\n";
 	}
 	cout << players[activePlayer].name << "'s Turn" << endl;
-	cout << "Enter any key to continue:";
+	cout << "Enter any key to continue: ";
 	cin >> buffer;
 	cin.ignore(numeric_limits<streamsize>::max(), '\n');
 }

@@ -9,7 +9,7 @@ using namespace std;
 class GoFish
 {
 private:
-	const int NUM_DECKS = 1, MIN_PLAYERS = 2, MAX_PLAYERS = 4, BOOK = 4, NUM_STARS = 25;
+	const int NUM_DECKS = 1, MIN_PLAYERS = 2, MAX_PLAYERS = 4, BOOK = 4;
 	const int TWO_PLAYER_HAND = 7, THREE_PLAYER_HAND = 5;
 	struct Player
 	{
@@ -45,7 +45,7 @@ public:
 	void cleanup(); // Sets numPlayers and handSize back to -1, clears players vector, clear and repopulate deck.
 	bool allHandsEmpty(); // If any player still has cards, return false. If all player hands empty, return true.
 	bool targetsAvailable(); // Returns true if at least one other Player has cards in their hand.
-	void checkForBooks(Player& player) const; // Checks Player's hand for books. Hands should be sorted any time changes are made so only 1 pass required.
+	void checkForBooks(); // Checks Player's hand for books. Hands should be sorted any time changes are made so only 1 pass required.
 	void decideWinner(); // Compares all players' numBooks scores and announces the winner(s).
 	void displayAllBooks(); // Displays all players' bookPiles as well as their numBooks score.
 	void displayCurrentHand(); // Displays hand of current activePlayer.
@@ -69,6 +69,4 @@ public:
 
 // TO DO:
 // make sure hands get sorted after every change to hand
-// optional: take a turn to show players their cards after first dealing them?
 // optional: consider adding a string to each Player that informs them of the moves taken against them between their turns
-// optional: consider sorting books before displaying
