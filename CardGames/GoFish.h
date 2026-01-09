@@ -40,6 +40,7 @@ private:
 	void dealCard(Player& player); // Deals a card from play deck to a Player's hand.
 	void displayAvailableTargets(); // Displays all Players (except activePlayer) who have cards in their hands in a list.
 	bool isValidTarget(int target);
+	bool isValidValue(int value);
 	void cleanup(); // Sets numPlayers and handSize back to -1, clears players vector, clear and repopulate deck.
 	bool allHandsEmpty(); // If any player still has cards, return false. If all player hands empty, return true.
 	bool targetsAvailable(); // Returns true if at least one other Player has cards in their hand.

@@ -114,7 +114,7 @@ void GoFish::takeTurn()
 
 		if (targetsAvailable())
 		{
-			int target = -1;
+			int target;
 			if (players.size() == 2)
 			{
 				target = (activePlayer + 1) % 2;
@@ -140,7 +140,7 @@ void GoFish::takeTurn()
 				}
 			}
 
-			int value = -1;
+			int value;
 			bool validValue = false;
 			cout << "What card value do you want to ask " << players.at(target).name << " for? Value must already exist in your hand." << endl;
 			cout << "Note: Ace = 1, 2 - 10 = 2 - 10 , Jack = 11, Queen = 12, King = 13." << endl;
@@ -154,18 +154,7 @@ void GoFish::takeTurn()
 					cin.ignore(numeric_limits<streamsize>::max(), '\n');
 					value = -1;
 				}
-				else if (value < Card::A || value > Card::K)
-				{
-					cout << "\nInvalid value." << endl;
-				}
-				else if (!player.hand.contains(value))
-				{
-					cout << "\nYou cannot ask for a value that does not already exist in your hand." << endl;
-				}
-				else
-				{
-					validValue = true;
-				}
+				validValue = isValidValue(value); 
 			}
 			cout << "Checking " << players.at(target).name << "'s hand for " << value << "s..." << endl;
 			if (players.at(target).hand.contains(value))
@@ -280,6 +269,25 @@ bool GoFish::isValidTarget(int target)
 	}
 
 	return validTarget;
+}
+
+bool GoFish::isValidValue(int value)
+{
+	bool validValue = false;
+	if (value < Card::A || value > Card::K)
+	{
+		cout << "\nInvalid value." << endl;
+	}
+	else if (!players[activePlayer].hand.contains(value))
+	{
+		cout << "\nYou cannot ask for a value that does not already exist in your hand." << endl;
+	}
+	else
+	{
+		validValue = true;
+	}
+
+	return validValue;
 }
 
 void GoFish::cleanup()
