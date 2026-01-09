@@ -30,10 +30,7 @@ private:
 	int numPlayers;
 	int activePlayer;
 	int handSize;
-public:
-	GoFish();
 	void setup(); // Displays name of game, asks how many players, sets size of hand and sets up players vector.
-	void run(); // Plays the game.
 	void playRound(); // Deals cards, loops through turns until no more cards in play deck or players' hands.
 	// Provide a buffer at beginning of turn, display hand and check for books. Draw cards if hand empty.
 	// If targets available, ask Player who they want to target and what value they want. Handle moves accordingly.
@@ -42,6 +39,7 @@ public:
 	void dealHands(); // Deals hands to all Players, then calls function to sort them in ascending order.
 	void dealCard(Player& player); // Deals a card from play deck to a Player's hand.
 	void displayAvailableTargets(); // Displays all Players (except activePlayer) who have cards in their hands in a list.
+	bool isValidTarget(int target);
 	void cleanup(); // Sets numPlayers and handSize back to -1, clears players vector, clear and repopulate deck.
 	bool allHandsEmpty(); // If any player still has cards, return false. If all player hands empty, return true.
 	bool targetsAvailable(); // Returns true if at least one other Player has cards in their hand.
@@ -52,6 +50,9 @@ public:
 	void startTurnsBuffer() const; // Provides a buffer between Players' turns.
 	void endTurnBuffer(); // Provide buffer at end of turn to keep screen from skipping forward.
 	void displayTestingStuff(); // FOR TESTING PURPOSES: Displays players' hands, size of hands, booksPile, numBooks and playdeck size.
+public:
+	GoFish();
+	void run(); // Plays the game.
 };
 
 // HOW TO PLAY GO FISH
@@ -68,5 +69,4 @@ public:
 // Game ends when no more cards in play deck or any of the Players' hands
 
 // TO DO:
-// make sure hands get sorted after every change to hand
 // optional: consider adding a string to each Player that informs them of the moves taken against them between their turns

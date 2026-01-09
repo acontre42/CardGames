@@ -12,7 +12,7 @@ void GoFish::setup()
 	cout << "*****GO FISH*****" << endl;
 	while (numPlayers < MIN_PLAYERS || numPlayers > MAX_PLAYERS)
 	{
-		cout << "Please enter number of players(2-4):";
+		cout << "Please enter number of players(2-4): ";
 		cin >> numPlayers;
 		if (cin.fail())
 		{
@@ -109,19 +109,19 @@ void GoFish::takeTurn()
 			cout << endl;
 			player.hand.sortByAscValue();
 			displayCurrentHand();
+			checkForBooks(); // in case 4 of same card drawn from deck
 		}
 
 		if (targetsAvailable())
 		{
 			int target = -1;
-			int value = -1;
-			bool validValue = false, validTarget = false;
 			if (players.size() == 2)
 			{
 				target = (activePlayer + 1) % 2;
 			}
 			else
 			{
+				bool validTarget = false;
 				cout << "Which player would you like to target?" << endl;
 				displayAvailableTargets();
 				while (!validTarget)
@@ -136,25 +136,12 @@ void GoFish::takeTurn()
 					}
 
 					target = target - 1; // To match with index.
-					if (target < 0 || target > players.size() - 1)
-					{
-						cout << "Please enter a valid target." << endl;
-					}
-					else if (target == activePlayer)
-					{
-						cout << "You can't target yourself! :(" << endl;
-					}
-					else if (players[target].hand.empty())
-					{
-						cout << players[target].name << " is not a valid target as they do not currently have any cards!" << endl;
-					}
-					else
-					{
-						validTarget = true;
-					}
+					validTarget = isValidTarget(target);
 				}
 			}
 
+			int value = -1;
+			bool validValue = false;
 			cout << "What card value do you want to ask " << players.at(target).name << " for? Value must already exist in your hand." << endl;
 			cout << "Note: Ace = 1, 2 - 10 = 2 - 10 , Jack = 11, Queen = 12, King = 13." << endl;
 			while (!validValue)
@@ -203,14 +190,7 @@ void GoFish::takeTurn()
 					cout << "You drew a ";
 					player.hand.last();
 					cout << "." << endl;
-					if (player.hand.getValueAt(player.hand.getSize() - 1) == value) // Go again if value drawn was value asked for.
-					{
-						goAgain = true;
-					}
-					else
-					{
-						goAgain = false;
-					}
+					goAgain = (player.hand.getValueAt(player.hand.getSize() - 1) == value ? true : false); // Go again if value drawn was value asked for.
 				}
 				else
 				{
@@ -279,6 +259,29 @@ void GoFish::displayAvailableTargets()
 	}
 }
 
+bool GoFish::isValidTarget(int target)
+{
+	bool validTarget = false;
+	if (target < 0 || target > players.size() - 1)
+	{
+		cout << "Please enter a valid target." << endl;
+	}
+	else if (target == activePlayer)
+	{
+		cout << "You can't target yourself! :(" << endl;
+	}
+	else if (players[target].hand.empty())
+	{
+		cout << players[target].name << " is not a valid target as they do not currently have any cards!" << endl;
+	}
+	else
+	{
+		validTarget = true;
+	}
+
+	return validTarget;
+}
+
 void GoFish::cleanup()
 {
 	players.clear();
@@ -324,7 +327,7 @@ void GoFish::checkForBooks()
 	int handSize = player.hand.getSize();
 	int nextValue = -1;
 	int count = 0;
-	vector<int> bookValues;
+	int bookValue = -1; // You can only ever have one book per dealt hand (5 or 7 cards) or per ask (can receive 3 cards max).
 
 	// Checks for 4 of any value.
 	for (int i = 1; i < handSize; i++)
@@ -335,8 +338,8 @@ void GoFish::checkForBooks()
 			count++;
 			if (count == 3) // First value counts as the 1st instance out of potential 4 so only need to count to 3.
 			{
-				bookValues.push_back(value);
-				count = 0;
+				bookValue = value;
+				break; // Book found so no need to keep searching. 
 			}
 		}
 		else
@@ -345,25 +348,21 @@ void GoFish::checkForBooks()
 			count = 0;
 		}
 	}
-	// If books found, move Cards to booksPile, increment numBooks, and inform Player.
-	int bookValuesSize = bookValues.size();
-	if (bookValuesSize > 0)
+	// If book found, move Cards to booksPile, increment numBooks, and inform Player.
+	if (bookValue > 0)
 	{
-		for (int i = 0; i < bookValuesSize; i++)
+		vector<Card> book = player.hand.getCardsOfValue(bookValue);
+		int bookSize = book.size();
+		for (int j = 0; j < bookSize; j++)
 		{
-			int value = bookValues.at(i);
-			vector<Card> book = player.hand.getCardsOfValue(value);
-			int bookSize = book.size();
-			for (int j = 0; j < bookSize; j++)
-			{
-				player.booksPile.push_back(book.back());
-				book.pop_back();
-			}
-			player.numBooks++;
+			player.booksPile.push_back(book.back());
+			book.pop_back();
 		}
-		cout << "\nYou have " << bookValues.size() << " book(s) in your hand! You now have ";
+		player.numBooks++;
+
+		cout << "\nYou have a book in your hand! You now have ";
 		cout << player.numBooks << " point(s)! ";
-		cout << "After removing all books from hand, your hand now looks like this:" << endl;
+		cout << "After removing the book, your hand now looks like this: " << endl;
 		player.hand.sortByAscValue();
 		player.hand.display();
 	}
