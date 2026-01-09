@@ -11,42 +11,41 @@ const double STARTER_BANK = 100, MIN_BET = 1;
 struct Player
 {
 	DeckOfCards deck;
+	string name;
 	double bank;
 	double bet;
 	bool stillIn;
-	Player()
+	Player(string name)
 	{
-		bank = STARTER_BANK;
-		bet = 0;
-		stillIn = true;
+		this->name = name;
+		this->bank = STARTER_BANK;
+		this->bet = 0;
+		this->stillIn = true;
 	}
-	// Calculate the total value of a Player's hand. Face cards = 10. A's = 1 or 11 depending on
-	// whether or not the higher value would exceed a value of 21.
-	int calcTotal()
+	int calcTotal() // Calculate the total value of a Player's hand.
 	{
 		int total = 0;
 		int numAs = 0;
 		for (int i = 0; i < deck.getSize(); i++)
 		{
-			int value = deck.getValueAt(i);
-			if (value == 1)
+			int value = deck.getValueAt(i); 
+			if (value == 1) // A's = 1 or 11 depending on whether or not the higher value would exceed a value of 21.
 			{
-				numAs++;
+				numAs++; // Since A's can have multiple values, just count them for now.
 			}
 			else if (value > 10)
 			{
-				total = total + 10;
+				total = total + 10; // Face cards = 10.
 			}
 			else
 			{
 				total = total + value;
 			}
 		}
-		// This Blackjack game will count an Ace as an 11 when it gives the Player a Blackjack
-		// or when doing so does not exceed 21.
+		// Calculate values of Aces
 		while (numAs != 0)
 		{
-			if (total + 11 <= 21)
+			if (total + 11 <= 21) // Count Ace as 11 when it does not exceed 21.
 			{
 				total = total + 11;
 			}
@@ -97,6 +96,7 @@ public:
 	bool playersIn(); // Checks the players vector to see if any players are stillIn the round.
 	void summary(); // Displays the amount of money lost/gained by each player throughout the game.
 	void cleanup(); // Clears Players in players vectors, sets numPlayers back to -1.
+	void screenBuffer(); // Buffer to prevent screen from skipping forward.
 };
 
 // TO DO LIST:
@@ -105,3 +105,7 @@ public:
 // ERROR in simulation: on second round of two player game, second player doubled their bet and got a 21 but
 // game did not update their bank or indicate that they won at end of round? only first player was updated
 // what if player has $0 heading into next round? need to implement something for this
+
+// BLACKJACK RULES:
+// Natural Blackjack: When an ace and any 10-point card are the initial two cards dealt. Win an extra 50% of bet.
+// Unnatural Blackjack A.K.A "21": Three or more cards totaling 21.
