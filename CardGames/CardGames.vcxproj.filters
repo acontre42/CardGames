@@ -24,7 +24,7 @@
     <ClCompile Include="DeckOfCards.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BlackjackGame.cpp">
+    <ClCompile Include="Blackjack.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GoFish.cpp">
@@ -38,7 +38,7 @@
     <ClInclude Include="DeckOfCards.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BlackjackGame.h">
+    <ClInclude Include="Blackjack.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GoFish.h">

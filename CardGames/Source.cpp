@@ -3,13 +3,13 @@
 #include <algorithm>
 #include "Card.h"
 #include "DeckOfCards.h"
-#include "BlackjackGame.h"
+#include "Blackjack.h"
 #include "GoFish.h"
 using namespace std;
 
 int main()
 {
-	BlackjackGame blackjack;
+	Blackjack blackjack;
 	GoFish gofish;
 	char choice;
 
