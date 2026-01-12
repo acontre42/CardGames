@@ -14,7 +14,7 @@ struct Player
 	DeckOfCards deck;
 	string name;
 	double bank;
-	double bet;
+	int bet;
 	bool stillIn;
 	Player(string name)
 	{
@@ -96,7 +96,6 @@ public:
 // ERROR in simulation: on second round of two player game, second player doubled their bet and got a 21 but
 // game did not update their bank or indicate that they won at end of round? only first player was updated
 // what if player has $0 heading into next round? need to implement something for this
-// make sure bets don't have more than 2 decimal places
 
 // BLACKJACK RULES:
 // Natural Blackjack: When an ace and any 10-point card are the initial two cards dealt. Win an extra 50% of bet.

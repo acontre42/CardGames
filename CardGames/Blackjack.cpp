@@ -49,6 +49,7 @@ void Blackjack::run()
 
 void Blackjack::getBetsFromPlayers()
 {
+	cout << "***PLACE YOUR BETS***" << endl << "Note: Bet amounts must be whole numbers." << endl << endl;
 	for (int i = 0; i < players.size(); i++)
 	{
 		placeBet(players.at(i));
@@ -58,7 +59,7 @@ void Blackjack::getBetsFromPlayers()
 
 void Blackjack::placeBet(Player& player)
 {
-	double betAmount = 0;
+	int betAmount = 0;
 	do
 	{
 		cout << player.name << "'s bank account: $" << player.bank << endl;
@@ -68,11 +69,11 @@ void Blackjack::placeBet(Player& player)
 		{
 			if (betAmount < MIN_BET)
 			{
-				cout << endl << "Bets must be at least $" << MIN_BET << "." << endl;
+				cout << "Bets must be at least $" << MIN_BET << "." << endl;
 			}
 			if (betAmount > player.bank)
 			{
-				cout << endl << "You cannot bet more money than you have in the bank." << endl;
+				cout << "You cannot bet more money than you have in the bank." << endl;
 			}
 		}
 		else
@@ -81,9 +82,10 @@ void Blackjack::placeBet(Player& player)
 			cin.clear();
 		}
 		cin.ignore(numeric_limits<streamsize>::max(), '\n');
-		cout << endl;
 	} while (betAmount < MIN_BET || betAmount > player.bank);
+
 	player.bet = betAmount;
+	cout << player.name << " has bet $" << player.bet << "." << endl << endl;
 }
 
 void Blackjack::clearAllBets()
