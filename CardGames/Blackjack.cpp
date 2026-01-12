@@ -2,7 +2,6 @@
 
 Blackjack::Blackjack()
 {
-	activePlayer = FIRST_PLAYER;
 	numPlayers = -1;
 }
 
@@ -23,9 +22,10 @@ void Blackjack::setup()
 		}
 		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 	}
-	for (int i = 0; i < numPlayers; i++)
+	for (int i = 1; i <= numPlayers; i++)
 	{
-		players.emplace_back(); // Adds Players to players vector.
+		string name = "Player " + to_string(i);
+		players.emplace_back(name); // Adds Players to players vector.
 	}
 	cout << endl;
 }
@@ -33,7 +33,7 @@ void Blackjack::setup()
 void Blackjack::run()
 {
 	setup();
-	char choice = ' ';
+	char choice;
 	do
 	{
 		getBetsFromPlayers();
@@ -45,18 +45,15 @@ void Blackjack::run()
 		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 	} while (choice != 'q');
 	summary();
-	cleanup();
 }
 
 void Blackjack::getBetsFromPlayers()
 {
 	for (int i = 0; i < players.size(); i++)
 	{
-		activePlayer = i;
 		placeBet(players.at(i));
 	}
-	cout << "All bets placed." << endl << endl;
-	resetActivePlayer();
+	cout << "All bets placed." << "\n******************************" << endl << endl;
 }
 
 void Blackjack::placeBet(Player& player)
@@ -64,7 +61,7 @@ void Blackjack::placeBet(Player& player)
 	double betAmount = 0;
 	do
 	{
-		cout << "Player " << activePlayer + 1 << "'s bank account: $" << player.bank << endl;
+		cout << player.name << "'s bank account: $" << player.bank << endl;
 		cout << "How much would you like to bet? ";
 		cin >> betAmount;
 		if (!cin.fail())
@@ -97,14 +94,6 @@ void Blackjack::clearAllBets()
 	}
 }
 
-void Blackjack::resetActivePlayer()
-{
-	if (activePlayer != FIRST_PLAYER)
-	{
-		activePlayer = FIRST_PLAYER;
-	}
-}
-
 void Blackjack::resetPlayersStatuses()
 {
 	dealer.stillIn = true;
@@ -120,6 +109,7 @@ void Blackjack::returnAllCards()
 	{
 		playDeck.addCard(dealer.deck.getCard());
 	}
+	/*
 	for (int i = 0; i < numPlayers; i++)
 	{
 		while (players.at(i).deck.getSize() != 0)
@@ -127,6 +117,15 @@ void Blackjack::returnAllCards()
 			playDeck.addCard(players.at(i).deck.getCard());
 		}
 	}
+	*/
+	for (auto& p : players)
+	{
+		while (p.deck.getSize() != 0)
+		{
+			playDeck.addCard(p.deck.getCard());
+		}
+	}
+	cout << "Deck size: " << playDeck.getSize() << endl; // *** DELETE
 }
 
 void Blackjack::playARound()
@@ -142,10 +141,11 @@ void Blackjack::playARound()
 	cout << endl;
 	for (int i = 0; i < players.size(); i++)
 	{
-		cout << "Player " << i + 1 << "'s cards: " << endl;
-		players.at(i).deck.display();
-		cout << "Total: " << players.at(i).calcTotal();
-		if (players.at(i).calcTotal() == BLACKJACK)
+		Player& player = players.at(i);
+		cout << player.name << "'s cards: " << endl;
+		player.deck.display();
+		cout << "Total: " << player.calcTotal();
+		if (player.calcTotal() == BLACKJACK)
 		{
 			cout << " Blackjack!";
 		}
@@ -174,33 +174,23 @@ void Blackjack::playARound()
 
 void Blackjack::distributeTwoCards(Player& player)
 {
-	if (playDeck.getSize() >= 2)
-	{
-		player.deck.addCard(playDeck.getCard());
-		player.deck.addCard(playDeck.getCard());
-	}
-	else
-	{
-		cout << "Not enough cards in play deck to play." << endl;
-		exit(1);
-	}
+	player.deck.addCard(playDeck.getCard());
+	player.deck.addCard(playDeck.getCard());
 }
 
 void Blackjack::getMovesFromPlayers()
 {
 	for (int i = 0; i < players.size(); i++)
 	{
-		activePlayer = i;
 		getMove(players.at(i));
 	}
-	resetActivePlayer();
 }
 
 void Blackjack::getMove(Player& player)
 {
 	char choice = ' ';
 	bool doneWithRound = false;
-	cout << "***Player " << activePlayer + 1 << "'s Move***" << endl;
+	cout << "***" << player.name << "'s Move***" << endl;
 
 	if (player.calcTotal() == BLACKJACK)
 	{
@@ -330,11 +320,11 @@ void Blackjack::dealersTurn()
 			cout << " bringing their total to " << dealer.calcTotal() << ".";
 			if (dealer.calcTotal() > BLACKJACK)
 			{
-				cout << " Bust!" << endl << endl;
+				cout << " Bust!";
 				dealer.stillIn = false;
 				done = true;
 			}
-			cout << endl;
+			cout << endl << endl;
 		}
 		else // Dealer stays on totals over 17.
 		{
@@ -350,12 +340,12 @@ void Blackjack::checkResults()
 	{
 		for (int i = 0; i < players.size(); i++)
 		{
-			activePlayer = i;
-			if (players.at(i).stillIn)
+			Player& player = players.at(i);
+			if (player.stillIn)
 			{
-				players.at(i).bank = players.at(i).bank + players.at(i).bet;
-				cout << "Player " << activePlayer + 1 << " has won $" << players.at(i).bet;
-				cout << " for a bank total of $" << players.at(i).bank << "." << endl << endl;
+				player.bank += player.bet;
+				cout << player.name << " has won $" << player.bet;
+				cout << " for a bank total of $" << player.bank << "." << endl << endl;
 			}
 		}
 	}
@@ -365,34 +355,33 @@ void Blackjack::checkResults()
 
 		for (int i = 0; i < players.size(); i++)
 		{
-			activePlayer = i;
-			if (players.at(i).stillIn)
+			Player& player = players.at(i);
+			if (player.stillIn)
 			{
-				int playerTotal = players.at(i).calcTotal();
-				cout << "Player " << activePlayer + 1 << "'s total of " << playerTotal << " is ";
+				int playerTotal = player.calcTotal();
+				cout << player.name << "'s total of " << playerTotal << " is ";
 				if (playerTotal == dealerTotal)
 				{
 					cout << "equal to dealer's total of " << dealerTotal << ".";
-					cout << " Push! Your bank account remains $" << players.at(i).bank << "." << endl << endl;
+					cout << " Push! Your bank account remains $" << player.bank << "." << endl << endl;
 				}
 				else if (playerTotal > dealerTotal)
 				{
-					players.at(i).bank = players.at(i).bank + players.at(i).bet;
+					player.bank += player.bet;
 					cout << "greater than dealer's total of " << dealerTotal << ".";
-					cout << " You win $" << players.at(i).bet << " for a bank total of $";
-					cout << players.at(i).bank << "." << endl << endl;
+					cout << " You win $" << player.bet << " for a bank total of $";
+					cout << player.bank << "." << endl << endl;
 				}
 				else
 				{
-					players.at(i).bank = players.at(i).bank - players.at(i).bet;
+					player.bank -= player.bet;
 					cout << "less than dealer's total of " << dealerTotal << ".";
-					cout << " You've lost $" << players.at(i).bet << " for a bank total of $";
-					cout << players.at(i).bank << "." << endl << endl;
+					cout << " You've lost $" << player.bet << " for a bank total of $";
+					cout << player.bank << "." << endl << endl;
 				}
 			}
 		}
 	}
-	resetActivePlayer();
 }
 
 bool Blackjack::playersIn()
@@ -412,25 +401,30 @@ void Blackjack::summary()
 	cout << "END OF GAME SUMMARY:" << endl;
 	for (int i = 0; i < numPlayers; i++)
 	{
-		double total = players.at(i).bank - STARTER_BANK;
+		Player& player = players.at(i);
+		double total = player.bank - STARTER_BANK;
+
+		cout << player.name;
 		if (total == 0)
 		{
-			cout << "Player " << i + 1 << " did not gain or lose any money this game." << endl;
+			cout << " did not gain or lose any money this game. ";
 		}
 		else if (total > 0)
 		{
-			cout << "Player " << i + 1 << " gained $" << total << " this game." << endl;
+			cout << " gained $" << total << " this game. ";
 		}
 		else
 		{
-			cout << "Player " << i + 1 << " lost $" << abs(total) << " this game." << endl;
+			cout << " lost $" << abs(total) << " this game. ";
 		}
+		cout << "End game bank: $" << player.bank << endl << endl;
 	}
-	cout << endl;
 }
 
-void Blackjack::cleanup()
+void Blackjack::screenBuffer()
 {
-	players.clear();
-	numPlayers = -1;
+	char buffer;
+	cout << "Enter any key to continue: ";
+	cin >> buffer;
+	cout << endl << endl;
 }
