@@ -109,15 +109,6 @@ void Blackjack::returnAllCards()
 	{
 		playDeck.addCard(dealer.deck.getCard());
 	}
-	/*
-	for (int i = 0; i < numPlayers; i++)
-	{
-		while (players.at(i).deck.getSize() != 0)
-		{
-			playDeck.addCard(players.at(i).deck.getCard());
-		}
-	}
-	*/
 	for (auto& p : players)
 	{
 		while (p.deck.getSize() != 0)
@@ -125,7 +116,6 @@ void Blackjack::returnAllCards()
 			playDeck.addCard(p.deck.getCard());
 		}
 	}
-	cout << "Deck size: " << playDeck.getSize() << endl; // *** DELETE
 }
 
 void Blackjack::playARound()
