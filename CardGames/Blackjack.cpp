@@ -53,7 +53,7 @@ void Blackjack::getBetsFromPlayers()
 	{
 		placeBet(players.at(i));
 	}
-	cout << "All bets placed." << "\n******************************" << endl << endl;
+	cout << "All bets placed.\n\n";
 }
 
 void Blackjack::placeBet(Player& player)
@@ -126,6 +126,7 @@ void Blackjack::playARound()
 	{
 		distributeTwoCards(players.at(i));
 	}
+	cout << "***PLAYERS' CARDS***" << endl << endl;
 	cout << "Dealer's cards: " << endl << "One card face down." << endl;
 	dealer.deck.peek();
 	cout << endl;
@@ -141,6 +142,7 @@ void Blackjack::playARound()
 		}
 		cout << endl << endl;
 	}
+	screenBuffer();
 	// Get moves from players.
 	getMovesFromPlayers();
 	// If there are still players in the round, Dealer takes their turn and player results
