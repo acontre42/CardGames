@@ -17,8 +17,8 @@ int main()
 	{
 		cout << "***** CARD GAMES *****" << endl;
 		cout << "What card game would you like to play? Enter one of the options below or enter 'Q' to quit." << endl;
-		cout << "a) Blackjack" << endl;
-		cout << "b) Go Fish" << endl;
+		cout << " a) Blackjack" << endl;
+		cout << " b) Go Fish" << endl;
 		cout << "Enter your choice: ";
 		cin >> choice;
 		choice = tolower(choice);
