@@ -97,41 +97,6 @@ void Blackjack::placeBet(Player& player)
 	cout << player.name << " has bet $" << player.bet << "." << endl << endl;
 }
 
-void Blackjack::clearAllBets()
-{
-	for (auto& p : players)
-	{
-		p.bet = 0;
-	}
-}
-
-void Blackjack::resetPlayersStatuses()
-{
-	dealer.stillIn = true;
-	for (auto& p : players)
-	{
-		if (p.bank >= MIN_BET)
-		{
-			p.stillIn = true;
-		}
-	}
-}
-
-void Blackjack::returnAllCards()
-{
-	while (dealer.deck.getSize() != 0)
-	{
-		playDeck.addCard(dealer.deck.getCard());
-	}
-	for (auto& p : players)
-	{
-		while (p.deck.getSize() != 0)
-		{
-			playDeck.addCard(p.deck.getCard());
-		}
-	}
-}
-
 void Blackjack::playARound()
 {
 	// Distribute cards to Dealer and Players.
@@ -146,8 +111,7 @@ void Blackjack::playARound()
 	cout << "***PLAYERS' CARDS***" << endl << endl;
 	cout << "Dealer's cards: " << endl;
 	dealer.deck.peek();
-	cout << "One card face down." << endl;
-	cout << endl;
+	cout << "One card face down." << endl << endl;
 	for (auto& player : players)
 	{
 		if (player.stillIn)
@@ -178,10 +142,8 @@ void Blackjack::playARound()
 		dealer.deck.display();
 		cout << endl;
 	}
-	// Clean up
-	returnAllCards();
-	resetPlayersStatuses();
-	clearAllBets();
+	// Reset for next round
+	reset();
 }
 
 void Blackjack::distributeTwoCards(Player& player)
@@ -197,6 +159,7 @@ void Blackjack::getMovesFromPlayers()
 		if (player.stillIn)
 		{
 			getMove(player);
+			screenBuffer();
 		}
 	}
 }
@@ -445,12 +408,33 @@ void Blackjack::summary()
 		cout << "End game bank: $" << player.bank << endl << endl;
 	}
 }
-/*
+
 void Blackjack::reset()
 {
-	// TO DO:
+	// Return all players' cards to the playDeck.
+	while (dealer.deck.getSize() != 0)
+	{
+		playDeck.addCard(dealer.deck.getCard());
+	}
+	for (auto& p : players)
+	{
+		while (p.deck.getSize() != 0)
+		{
+			playDeck.addCard(p.deck.getCard());
+		}
+	}
+	// Reset all players' bets and set their stillIn variable back to true if they have at least MIN_BET in the bank.
+	dealer.stillIn = true;
+	for (auto& player : players)
+	{
+		player.bet = 0;
+		if (player.bank >= MIN_BET)
+		{
+			player.stillIn = true;
+		}
+	}
 }
-*/
+
 void Blackjack::cleanup()
 {
 	players.clear();

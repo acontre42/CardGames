@@ -70,9 +70,6 @@ private:
 	void setup(); // Welcomes player, displays some rules, takes input from player to setup game.
 	void getBetsFromPlayers(); // Loops through players vector and calls the placeBet() function for each Player who is stillIn.
 	void placeBet(Player& player); // Gets bets from players and validates amounts.
-	void clearAllBets(); // Sets bet for all Players to 0. To be called after every round.
-	void resetPlayersStatuses(); // Resets all players' stillIn variable back to true if they have at least MIN_BET in the bank.
-	void returnAllCards(); // Return all players' cards to the playDeck.
 	// Distributes cards, displays cards/totals, loops through players vector to get
 	// their moves, display dealer cards/move, check results, return cards, reset statuses.
 	void playARound();
@@ -85,7 +82,7 @@ private:
 	void checkResults(); // Compares the totals of the players who are stillIn to the Dealer's total. Adjusts banks.
 	bool playersIn(); // Checks the players vector to see if any players are stillIn the round.
 	void summary(); // Displays the amount of money lost/gained by each player throughout the game.
-	//void reset(); // Return cards to deck, reset player statuses, clear bets.
+	void reset(); // Return cards to deck, reset player statuses, clear bets.
 	void cleanup(); // Clears Players in players vectors, sets numPlayers back to -1.
 	void screenBuffer(); // Buffer to prevent screen from skipping forward.
 public:
