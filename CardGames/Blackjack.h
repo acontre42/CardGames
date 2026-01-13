@@ -68,16 +68,16 @@ private:
 	vector<Player> players;
 	int numPlayers;
 	void setup(); // Welcomes player, displays some rules, takes input from player to setup game.
-	void getBetsFromPlayers(); // Loops through players vector and calls the placeBet() function for each Player.
+	void getBetsFromPlayers(); // Loops through players vector and calls the placeBet() function for each Player who is stillIn.
 	void placeBet(Player& player); // Gets bets from players and validates amounts.
 	void clearAllBets(); // Sets bet for all Players to 0. To be called after every round.
-	void resetPlayersStatuses(); // Resets all players' stillIn variable back to true.
+	void resetPlayersStatuses(); // Resets all players' stillIn variable back to true if they have at least MIN_BET in the bank.
 	void returnAllCards(); // Return all players' cards to the playDeck.
 	// Distributes cards, displays cards/totals, loops through players vector to get
 	// their moves, display dealer cards/move, check results, return cards, reset statuses.
 	void playARound();
 	void distributeTwoCards(Player& player); // Distribute 2 cards to a Player's deck.
-	void getMovesFromPlayers(); // Loops through players vector and calls the getMove() function for each Player.
+	void getMovesFromPlayers(); // Loops through players vector and calls the getMove() function for each Player who is stillIn.
 	void getMove(Player& player); // Gets input from Player to decide their move (Hit, Stay, Double, Surrender).
 	// Displays dealer's cards and checks for Blackjack. If total <= 17, dealer hits. If not, stays.
 	// If dealer busts, set dealer's stillIn variable to false.
@@ -85,6 +85,8 @@ private:
 	void checkResults(); // Compares the totals of the players who are stillIn to the Dealer's total. Adjusts banks.
 	bool playersIn(); // Checks the players vector to see if any players are stillIn the round.
 	void summary(); // Displays the amount of money lost/gained by each player throughout the game.
+	//void reset(); // Return cards to deck, reset player statuses, clear bets.
+	void cleanup(); // Clears Players in players vectors, sets numPlayers back to -1.
 	void screenBuffer(); // Buffer to prevent screen from skipping forward.
 public:
 	Blackjack();
@@ -92,10 +94,8 @@ public:
 };
 
 // TO DO LIST:
-// optional: Add a 1 second sleep between players' hands when displaying them? when displaying erros? (screenBuffer function)
 // ERROR in simulation: on second round of two player game, second player doubled their bet and got a 21 but
 // game did not update their bank or indicate that they won at end of round? only first player was updated
-// what if player has $0 heading into next round? need to implement something for this
 
 // BLACKJACK RULES:
 // Natural Blackjack: When an ace and any 10-point card are the initial two cards dealt. Win an extra 50% of bet.
