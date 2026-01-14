@@ -14,7 +14,7 @@ public:
 	//Getters
 	int getNumDecks();
 	size_t getSize(); // is size_t ok? 
-	bool empty(); // Returns true if deck.empty() returns true.
+	bool empty(); // Returns deck.empty().
 	Card getCard(); // Returns a Card from the deck.
 	// Returns Cards of specific value from deck.
 	// Checks if deck has at least one card with that value. If yes, continuously swap it to back and pop it
@@ -23,7 +23,7 @@ public:
 	int getValueAt(int index); // Returns value of Card at a particular index in deck.
 	void display(); // Display all cards in deck.
 	void last(); // Display last card.
-	void peek(); // Display top card.
+	void peek(); // Display front card.
 	void populate(); // Populate the deck vector with the standard 52 cards in a deck of cards.
 	void reshuffle(); // Shuffles deck if not empty.
 	void addCard(Card card); // Add Card to deck.

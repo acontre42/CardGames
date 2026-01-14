@@ -25,7 +25,7 @@ size_t DeckOfCards::getSize()
 
 bool DeckOfCards::empty()
 {
-	return (deck.empty() ? true : false);
+	return deck.empty();
 }
 
 Card DeckOfCards::getCard()
@@ -46,25 +46,18 @@ Card DeckOfCards::getCard()
 vector<Card> DeckOfCards::getCardsOfValue(int value)
 {
 	vector<Card> returnedCards;
-	if (contains(value))
+	while (contains(value))
 	{
-		while (contains(value))
+		for (int i = 0; i < deck.size(); i++)
 		{
-			for (int i = 0; i < deck.size(); i++)
+			if (deck[i].getValue() == value)
 			{
-				if (deck[i].getValue() == value)
-				{
-					swap(deck[i], deck.back());
-					break;
-				}
+				swap(deck[i], deck.back());
+				break;
 			}
-			returnedCards.push_back(deck.back());
-			deck.pop_back();
 		}
-	}
-	else
-	{
-		cout << "No cards in deck contain desired value." << endl;
+		returnedCards.push_back(deck.back());
+		deck.pop_back();
 	}
 	return returnedCards;
 }
@@ -90,7 +83,7 @@ void DeckOfCards::display()
 	}
 	else
 	{
-		for (auto d : deck)
+		for (auto& d : deck)
 		{
 			d.display();
 			cout << endl;
@@ -100,14 +93,12 @@ void DeckOfCards::display()
 
 void DeckOfCards::last()
 {
-	Card card = deck.back();
-	card.display();
+	deck.back().display();
 }
 
 void DeckOfCards::peek()
 {
-	Card card = deck.front();
-	card.display();
+	deck.front().display();
 	cout << endl;
 }
 
