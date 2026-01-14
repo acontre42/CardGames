@@ -320,9 +320,8 @@ void Blackjack::checkResults()
 {
 	if (!dealer.stillIn)
 	{
-		for (int i = 0; i < players.size(); i++)
+		for (auto& player : players)
 		{
-			Player& player = players.at(i);
 			if (player.stillIn)
 			{
 				player.bank += player.bet;
@@ -335,9 +334,8 @@ void Blackjack::checkResults()
 	{
 		int dealerTotal = dealer.calcTotal();
 
-		for (int i = 0; i < players.size(); i++)
+		for (auto& player : players)
 		{
-			Player& player = players.at(i);
 			if (player.stillIn)
 			{
 				int playerTotal = player.calcTotal();
@@ -394,7 +392,7 @@ void Blackjack::summary()
 		cout << player.name;
 		if (total == 0)
 		{
-			cout << " did not gain or lose any money this game. ";
+			cout << " broke even this game. ";
 		}
 		else if (total > 0)
 		{
