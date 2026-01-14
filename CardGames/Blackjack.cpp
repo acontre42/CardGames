@@ -166,9 +166,8 @@ void Blackjack::getMovesFromPlayers()
 
 void Blackjack::getMove(Player& player)
 {
-	char choice = ' ';
-	bool doneWithRound = false;
 	cout << "***" << player.name << "'s Move***" << endl;
+	bool doneWithRound = false;
 
 	if (player.calcTotal() == BLACKJACK)
 	{
@@ -180,9 +179,11 @@ void Blackjack::getMove(Player& player)
 	}
 
 	bool canDouble = (player.bet * 2 <= player.bank ? true : false);
-	bool validChoice = false;
+	char choice;
+	bool validChoice;
 	while (!doneWithRound)
 	{
+		validChoice = false;
 		do
 		{
 			cout << "Your cards: " << endl;
@@ -235,12 +236,12 @@ void Blackjack::getMove(Player& player)
 			}
 			cout << endl << endl;
 			break;
-			// Stay. Player is still in round but has not chosen to draw anymore cards. doneWithRound.
+			// Stay. Player is still in round but has not chosen to draw anymore cards. Player's turn ends.
 		case 'b':
 			cout << "You have chosen to stay with a total of " << player.calcTotal() << "." << endl << endl;
 			doneWithRound = true;
 			break;
-			// Surrender. Player is no longer in round, loses half their bet, and is doneWithRound.
+			// Surrender. Player is no longer in round, loses half their bet, and their turn ends.
 		case 'c':
 			player.stillIn = false;
 			player.bank = player.bank - (player.bet / 2);
@@ -249,7 +250,7 @@ void Blackjack::getMove(Player& player)
 			doneWithRound = true;
 			break;
 			// Double. Doubles the bet and draws one card. If player busts, subtract bet from
-			// their bank and set stillIn to false. Automatically doneWithRound.
+			// their bank and set stillIn to false. Automatically ends turn.
 		case 'd':
 			player.bet = player.bet * 2;
 			player.deck.addCard(playDeck.getCard());
@@ -271,8 +272,6 @@ void Blackjack::getMove(Player& player)
 			doneWithRound = true;
 			break;
 		}
-		choice = ' ';
-		validChoice = false;
 	}
 }
 
@@ -411,7 +410,7 @@ void Blackjack::summary()
 
 void Blackjack::reset()
 {
-	// Return all players' cards to the playDeck.
+	// Return all players' cards to the playDeck and reshuffle.
 	while (dealer.deck.getSize() != 0)
 	{
 		playDeck.addCard(dealer.deck.getCard());
@@ -423,6 +422,7 @@ void Blackjack::reset()
 			playDeck.addCard(p.deck.getCard());
 		}
 	}
+	playDeck.reshuffle();
 	// Reset all players' bets and set their stillIn variable back to true if they have at least MIN_BET in the bank.
 	dealer.stillIn = true;
 	for (auto& player : players)
@@ -446,5 +446,6 @@ void Blackjack::screenBuffer()
 	char buffer;
 	cout << "Enter any key to continue: ";
 	cin >> buffer;
+	cin.ignore(numeric_limits<streamsize>::max(), '\n');
 	cout << endl << endl;
 }
