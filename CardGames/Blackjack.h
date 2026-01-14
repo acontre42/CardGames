@@ -6,7 +6,7 @@
 #include <string>
 using namespace std;
 
-const int BLACKJACK = 21, FIRST_PLAYER = 0, MIN_PLAYERS = 1, MAX_PLAYERS = 4, NUM_DECKS = 1;
+const int BLACKJACK = 21, MIN_PLAYERS = 1, MAX_PLAYERS = 4, NUM_DECKS = 1;
 const double STARTER_BANK = 100, MIN_BET = 1;
 
 struct Player
@@ -70,9 +70,7 @@ private:
 	void setup(); // Welcomes player, displays some rules, takes input from player to setup game.
 	void getBetsFromPlayers(); // Loops through players vector and calls the placeBet() function for each Player who is stillIn.
 	void placeBet(Player& player); // Gets bets from players and validates amounts.
-	// Distributes cards, displays cards/totals, loops through players vector to get
-	// their moves, display dealer cards/move, check results, return cards, reset statuses.
-	void playARound();
+	void playARound(); // Deal cards, display cards/totals, get players' moves, dealers' turn, check results.
 	void distributeTwoCards(Player& player); // Distribute 2 cards to a Player's deck.
 	void getMovesFromPlayers(); // Loops through players vector and calls the getMove() function for each Player who is stillIn.
 	void getMove(Player& player); // Gets input from Player to decide their move (Hit, Stay, Double, Surrender).
@@ -81,18 +79,14 @@ private:
 	void dealersTurn();
 	void checkResults(); // Compares the totals of the players who are stillIn to the Dealer's total. Adjusts banks.
 	bool playersIn(); // Checks the players vector to see if any players are stillIn the round.
-	void summary(); // Displays the amount of money lost/gained by each player throughout the game.
-	void reset(); // Return cards to deck, reset player statuses, clear bets.
+	void summary(); // Displays the amount of money lost/gained by each player at the end of the game.
+	void reset(); // Return cards to deck, shuffle deck, reset player statuses, clear bets.
 	void cleanup(); // Clears Players in players vectors, sets numPlayers back to -1.
 	void screenBuffer(); // Buffer to prevent screen from skipping forward.
 public:
 	Blackjack();
 	void run(); // Plays the actual game.
 };
-
-// TO DO LIST:
-// ERROR in simulation: on second round of two player game, second player doubled their bet and got a 21 but
-// game did not update their bank or indicate that they won at end of round? only first player was updated
 
 // BLACKJACK RULES:
 // Natural Blackjack: When an ace and any 10-point card are the initial two cards dealt. Win an extra 50% of bet.
