@@ -39,6 +39,7 @@ void GoFish::run()
 	{
 		setup();
 		playRound();
+		cleanup();
 		// Play again?
 		cout << "Would you like to play again? Enter 'Q' to quit or any other key to play again." << endl;
 		cin >> choice;
@@ -49,8 +50,6 @@ void GoFish::run()
 		{
 			return;
 		}
-
-		cleanup();
 	}
 }
 
@@ -131,10 +130,10 @@ void GoFish::takeTurn()
 					if (cin.fail())
 					{
 						cin.clear();
-						cin.ignore(numeric_limits<streamsize>::max(), '\n');
 						target = -1;
 					}
 
+					cin.ignore(numeric_limits<streamsize>::max(), '\n');
 					target = target - 1; // To match with index.
 					validTarget = isValidTarget(target);
 				}
@@ -151,9 +150,9 @@ void GoFish::takeTurn()
 				if (cin.fail())
 				{
 					cin.clear();
-					cin.ignore(numeric_limits<streamsize>::max(), '\n');
 					value = -1;
 				}
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
 				validValue = isValidValue(value); 
 			}
 			cout << "Checking " << players.at(target).name << "'s hand for " << value << "s..." << endl;
