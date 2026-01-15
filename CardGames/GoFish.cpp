@@ -113,10 +113,10 @@ void GoFish::takeTurn()
 
 		if (targetsAvailable())
 		{
-			int target;
+			int targetIndex;
 			if (players.size() == 2)
 			{
-				target = (activePlayer + 1) % 2;
+				targetIndex = (activePlayer + 1) % 2;
 			}
 			else
 			{
@@ -126,22 +126,24 @@ void GoFish::takeTurn()
 				while (!validTarget)
 				{
 					cout << "Enter number of target: ";
-					cin >> target;
+					cin >> targetIndex;
 					if (cin.fail())
 					{
 						cin.clear();
-						target = -1;
+						targetIndex = -1;
 					}
 
 					cin.ignore(numeric_limits<streamsize>::max(), '\n');
-					target = target - 1; // To match with index.
-					validTarget = isValidTarget(target);
+					targetIndex = targetIndex - 1; // To match with vector index.
+					validTarget = isValidTarget(targetIndex);
 				}
 			}
 
+			Player& target = players[targetIndex];
+
 			int value;
 			bool validValue = false;
-			cout << "What card value do you want to ask " << players.at(target).name << " for? Value must already exist in your hand." << endl;
+			cout << "What card value do you want to ask " << target.name << " for? Value must already exist in your hand." << endl;
 			cout << "Note: Ace = 1, 2 - 10 = 2 - 10 , Jack = 11, Queen = 12, King = 13." << endl;
 			while (!validValue)
 			{
@@ -155,12 +157,12 @@ void GoFish::takeTurn()
 				cin.ignore(numeric_limits<streamsize>::max(), '\n');
 				validValue = isValidValue(value); 
 			}
-			cout << "Checking " << players.at(target).name << "'s hand for " << value << "s..." << endl;
-			if (players.at(target).hand.contains(value))
+			cout << "Checking " << target.name << "'s hand for " << Card::valueToString(value) << "s..." << endl;
+			if (target.hand.contains(value))
 			{
-				vector<Card> gimmeThose = players.at(target).hand.getCardsOfValue(value);
-				players.at(target).hand.sortByAscValue(); // Re-sort target's hand after taking cards.
-				cout << "You took " << gimmeThose.size() << " card(s) of value " << value << " from " << players.at(target).name << "." << endl;
+				vector<Card> gimmeThose = target.hand.getCardsOfValue(value);
+				target.hand.sortByAscValue(); // Re-sort target's hand after taking cards.
+				cout << "You took " << gimmeThose.size() << " card(s) of value " << value << " from " << target.name << "." << endl;
 				int gimmeThoseSize = gimmeThose.size();
 				for (int i = 0; i < gimmeThoseSize; i++)
 				{
@@ -219,15 +221,15 @@ void GoFish::dealHands()
 {
 	for (int i = 0; i < handSize; i++)
 	{
-		for (int i = 0; i < players.size(); i++)
+		for (auto& player : players)
 		{
-			dealCard(players.at(i));
+			dealCard(player);
 		}
 		deck.reshuffle();
 	}
-	for (Player& p : players)
+	for (Player& player : players)
 	{
-		p.hand.sortByAscValue();
+		player.hand.sortByAscValue();
 	}
 }
 
@@ -242,7 +244,7 @@ void GoFish::displayAvailableTargets()
 	{
 		if (i != activePlayer && !players[i].hand.empty())
 		{
-			cout << players.at(i).name << endl;
+			cout << players[i].name << endl;
 		}
 	}
 }
@@ -301,9 +303,9 @@ void GoFish::cleanup()
 
 bool GoFish::allHandsEmpty()
 {
-	for (int i = 0; i < players.size(); i++)
+	for (auto& player : players)
 	{
-		if (!(players[i].hand.empty()))
+		if (!player.hand.empty())
 		{
 			return false;
 		}
@@ -381,13 +383,13 @@ void GoFish::decideWinner()
 	vector<int> winnerIndices; // In the event of a tie.
 	for (int i = 0; i < players.size(); i++)
 	{
-		if (players.at(i).numBooks > highestScore)
+		if (players[i].numBooks > highestScore)
 		{
-			highestScore = players.at(i).numBooks;
+			highestScore = players[i].numBooks;
 			winnerIndices.clear();
 			winnerIndices.push_back(i);
 		}
-		else if (players.at(i).numBooks == highestScore)
+		else if (players[i].numBooks == highestScore)
 		{
 			winnerIndices.push_back(i);
 		}
@@ -410,11 +412,11 @@ void GoFish::decideWinner()
 void GoFish::displayAllBooks()
 {
 	cout << "Displaying all players' books..." << endl;
-	for (auto p : players)
+	for (auto& p : players)
 	{
 		cout << p.name << "'s book pile: ";
 		int cardIndex = 0;
-		for (auto b : p.booksPile)
+		for (auto& b : p.booksPile)
 		{
 			b.display();
 			if (cardIndex < p.booksPile.size() - 1)
@@ -460,13 +462,13 @@ void GoFish::displayTestingStuff()
 {
 	cout << "\n\n***********TESTING STUFF*********" << endl;
 	cout << "PLAYER CARDS " << endl;
-	for (auto p : players)
+	for (auto& p : players)
 	{
 		cout << p.name << "'s cards:" << endl;
 		p.hand.display();
 		cout << "Total: " << p.hand.getSize() << endl;
 		cout << "Book pile: " << endl;
-		for (auto b : p.booksPile)
+		for (auto& b : p.booksPile)
 		{
 			b.display();
 			cout << endl;
