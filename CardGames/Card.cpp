@@ -1,10 +1,10 @@
 #include "Card.h"
 
-Card::Card(int value, int symbol) 
+Card::Card(int value, int suit) 
 {
 	this->value = value;
-	this->symbol = symbol;
-	if (symbol >= CLUB && symbol <= SPADE)
+	this->suit = suit;
+	if (suit >= CLUB && suit <= SPADE)
 	{
 		color = BLACK;
 	}
@@ -16,25 +16,25 @@ Card::Card(int value, int symbol)
 
 Card::~Card()
 {
-	//cout << "DESTRUCTOR" << endl;
+	//cout << "DESTRUCTOR" << endl; 
 }
 
-int Card::getColor()
+int Card::getColor() const
 {
 	return color;
 }
 
-int Card::getSymbol()
+int Card::getSuit() const
 {
-	return symbol;
+	return suit;
 }
 
-int Card::getValue()
+int Card::getValue() const
 {
 	return value;
 }
 
-void Card::display()
+void Card::display() const
 {
 	switch (value)
 	{
@@ -54,7 +54,7 @@ void Card::display()
 		cout << value;
 	}
 	cout << " of ";
-	switch (symbol)
+	switch (suit)
 	{
 	case CLUB:
 		cout << "Clubs";
@@ -68,5 +68,27 @@ void Card::display()
 	case HEART:
 		cout << "Hearts";
 		break;
+	}
+}
+
+string Card::valueToRank(int value)
+{
+	if (value < A || value > K)
+	{
+		return "Error: N/A";
+	}
+
+	switch (value)
+	{
+	case J:
+		return "Jack";
+	case Q:
+		return "Queen";
+	case K:
+		return "King";
+	case A:
+		return "Ace";
+	default:
+		return to_string(value);
 	}
 }

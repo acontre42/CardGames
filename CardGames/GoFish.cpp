@@ -157,7 +157,7 @@ void GoFish::takeTurn()
 				cin.ignore(numeric_limits<streamsize>::max(), '\n');
 				validValue = isValidValue(value); 
 			}
-			cout << "Checking " << target.name << "'s hand for " << Card::valueToString(value) << "s..." << endl;
+			cout << "Checking " << target.name << "'s hand for " << Card::valueToRank(value) << "s..." << endl;
 			if (target.hand.contains(value))
 			{
 				vector<Card> gimmeThose = target.hand.getCardsOfValue(value);
@@ -438,7 +438,7 @@ void GoFish::displayCurrentHand()
 void GoFish::startTurnsBuffer() const
 {
 	char buffer;
-	const int NUM_STARS = 20;
+	const int NUM_STARS = 25;
 	for (int i = 0; i < NUM_STARS; i++)
 	{
 		cout << "\n*\n";
