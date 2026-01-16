@@ -12,6 +12,7 @@ Card::Card(int value, int suit)
 	{
 		color = RED;
 	}
+	this->rank = valueToRank(value);
 }
 
 Card::~Card()
@@ -36,24 +37,7 @@ int Card::getValue() const
 
 void Card::display() const
 {
-	switch (value)
-	{
-	case J:
-		cout << "Jack";
-		break;
-	case Q:
-		cout << "Queen";
-		break;
-	case K:
-		cout << "King";
-		break;
-	case A:
-		cout << "Ace";
-		break;
-	default:
-		cout << value;
-	}
-	cout << " of ";
+	cout << rank << " of ";
 	switch (suit)
 	{
 	case CLUB:

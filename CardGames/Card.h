@@ -9,6 +9,7 @@ private:
 	int color;
 	int suit;
 	int value;
+	string rank;
 public:
 	enum COLORS { BLACK, RED };
 	enum SUITS { CLUB, SPADE, DIAMOND, HEART };
